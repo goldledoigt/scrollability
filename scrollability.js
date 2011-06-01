@@ -152,7 +152,9 @@ function createTarget(target, startX, startY, startTime) {
     var stillTime = 0;
     var stillThreshold = 20;
     var snapped = false;
-    
+
+    var parentEl = target.node.parentNode;
+
     if (paginated) {
         var xposition = Math.round(position/viewport) * viewport;
         min = max = Math.round(xposition + absMax);
@@ -276,7 +278,7 @@ function createTarget(target, startX, startY, startTime) {
         target.update(target.node, position);
 
         // Update the scrollbar
-        var range = -min - max;
+        var range = parentEl.scrollHeight;
         if (scrollbar && viewport < range) {
             var viewable = viewport - kScrollbarMargin*2;
             var height = (viewable/range) * viewable;
@@ -284,7 +286,7 @@ function createTarget(target, startX, startY, startTime) {
             if (position > max) {
                 height = Math.max(height - (position-max), 5);
                 scrollPosition = 0;
-            } else if (position < min) {
+            } else if (position <= min) {
                 height = Math.max(height - (min - position), 5);
                 scrollPosition = (viewable-height);
             } else {
