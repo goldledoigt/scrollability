@@ -279,21 +279,28 @@ function createTarget(target, startX, startY, startTime) {
 
         // Update the scrollbar
         var range = parentEl.scrollHeight;
-        if (scrollbar && viewport < range) {
+        if (scrollbar && viewport < range && Math.abs(position) < range) {
             var viewable = viewport - kScrollbarMargin*2;
             var height = (viewable/range) * viewable;
             var scrollPosition = 0;
+            var flag = 0;
             if (position > max) {
+                flag = 1;
                 height = Math.max(height - (position-max), 5);
                 scrollPosition = 0;
             } else if (position <= min) {
+                flag = 2;
                 height = Math.max(height - (min - position), 5);
                 scrollPosition = (viewable-height);
             } else {
-                scrollPosition = Math.round((Math.abs(position) / range) * (viewable-height));
+                flag = 3;
+                scrollPosition = Math.round((Math.abs(position) / Math.abs(min)) * (viewable-height));
             }
             scrollPosition += kScrollbarMargin;
             scrollbar.style.height = Math.round(height) + 'px';
+
+            if (scrollPosition > 300)
+                console.log(position + " --update: " + scrollPosition + "  flag: " + flag + "  min: " + min);
 
             moveElement(scrollbar, 0, Math.round(scrollPosition));
             
